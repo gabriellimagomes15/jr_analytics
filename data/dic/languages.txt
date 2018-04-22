@@ -1,0 +1,13 @@
+V1
+english
+french
+german
+spanish
+chinese
+japanese
+Inglês
+francês
+alemão
+espanhol
+chinês
+japonês

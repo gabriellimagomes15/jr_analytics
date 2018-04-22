@@ -1,0 +1,535 @@
+V1
+bayesian network
+bias
+big data
+binomial distribution
+chi-square test
+classification
+clustering
+coefficient
+computational linguistics
+confidence interval
+continuous variable
+correlation
+covariance
+cross-validation
+d3
+data engineer
+data mining
+data science
+data structure
+data wrangling
+decision trees
+deep learning
+dependent variable
+dimension reduction
+discrete variable
+econometrics
+feature
+feature engineering
+gate
+gradient boosting
+gradient descent
+histogram
+independent variable
+javascript
+k-means clustering
+k-nearest neighbors
+latent variable
+lift
+linear algebra
+linear regression
+logarithm
+logistic regression
+machine learning
+markov chain
+matlab
+matrix
+mean
+mean absolute error
+mean squared error
+median
+mode
+model
+monte carlo method
+moving average
+n-gram
+naive bayes classifier
+neural network
+normal distribution
+nosql
+null hypothesis
+objective function
+outlier
+overfitting
+p value
+pagerank
+pandas
+perceptron
+perl
+pivot table
+poisson distribution
+posterior distribution
+predictive analytics
+predictive modeling
+principal component analysis
+prior distribution
+probability distribution
+python
+"quantile, quartile"
+r
+random forest
+regression
+reinforcement learning
+root mean squared error
+ruby
+s curve
+sas
+scalar
+scripting
+serial correlation
+shell
+spatiotemporal data
+spss
+sql
+standard deviation
+standard normal distribution
+standardized score
+stata
+"strata, stratified sampling"
+supervised learning
+support vector machine
+t-distribution
+tableau
+time series data
+uima
+unsupervised learning
+variance
+vector
+vector space
+weka
+acid test
+aggregation
+algorithm
+anonymization
+artificial intelligence
+automatic identification and capture (aidc)
+avro
+behavioral analytics
+big data scientist
+business intelligence (bi)
+cascading
+ 
+call detail record (cdr) analysis
+cassandra
+cell phone data
+clickstream analytics
+classification analysis
+cloud computing
+clustering analysis
+cold data storage
+comparative analysis
+chukwa
+clojure
+cloud
+columnar database or column-oriented database
+comparators
+complex event processing (cep)
+confabulation
+cross-channel analytics
+data access
+dashboard
+data aggregation
+data architecture and design
+database
+database administrator (dba)
+database as a service (daas)
+database management system (dbms)
+data center
+data cleansing
+data collection
+data custodian
+data-directed decision making
+data exhaust
+data feed
+data governance
+data integration
+data integrity
+data mart
+data migration
+"data model, data modeling"
+data point
+data profiling
+data quality
+data replication
+data repository
+data scientist
+data security
+data set
+data source
+data steward
+data visualization
+data warehouse
+de-identification
+demographic data
+deep thunder
+distributed cache
+distributed object
+distributed processing
+distributed file system
+document store databases
+document management
+drill
+elasticsearch
+event analytics
+exabyte
+external data
+"extract, transform, and load (etl)"
+exploratory analysis
+failover
+flume
+grid computing
+graph databases
+hadoop
+hama
+hana
+hbase
+hcatalog 
+hdfs (hadoop distributed file system)
+hive
+hue
+impala
+in-database analytics
+in-memory database
+in-memory data grid (imdg)
+internet of things
+kafka
+key value stores
+keyvalue databases
+latency
+linked data
+load balancing
+location analytics
+location data
+log file
+machine-generated data
+machine2machine data
+mapreduce
+mashup
+mahout 
+metadata
+mongodb
+mpp database
+multi-dimensional databases
+multivalue databases
+network analysis
+newsql
+object databases
+object-based image analysis
+online analytical processing (olap)
+online transactional processing (oltp)
+opendremel
+open data center alliance (odca)
+operational data store (ods)
+oozie 
+parallel data analysis
+parallel method invocation (pmi)
+parallel processing
+parallel query
+pattern recognition
+pentaho 
+petabyte
+pig
+public data
+query
+query analysis
+re-identification
+real-time data
+recommendation engine
+reference data
+risk analysis
+root-cause analysis
+routing analysis
+scalability
+schema
+search data
+semi-structured data
+sentiment analysis
+server
+spatial analysis
+sqoop
+storm
+software as a service (saas)
+storage
+structured data
+structured query language (sql)
+text analytics
+text mining
+transactional data
+thrift
+unstructured data
+value
+volume
+visualization
+webhdfs apache hadoop
+weather data
+xml databases
+zookeeper
+java
+c++
+julia
+mathematica
+php
+scala
+octave
+excel
+d3.js
+spotfire
+spark
+shark
+oozie
+mahout
+azure
+aws
+algoritmo
+angularjs
+inteligência artificial
+backpropagation
+teorema de bayes
+rede bayesiana
+viés
+dados importantes
+distribuição binomial
+teste de qui-quadrado
+classificação
+agrupamento
+coeficiente
+linguística computacional
+intervalo de confiança
+variável contínua
+correlação
+covariância
+validação cruzada
+engenheiro de dados
+mineração de dados
+ciência dos dados
+estrutura de dados
+disputa de dados
+Árvores de decisão
+aprendizagem profunda
+variável dependente
+redução de dimensão
+Variável discreta
+econometria
+característica
+engenharia funcional
+portão
+aumento de gradiente
+Gradiente descendente
+histograma
+variável independente
+k-vizinhos mais próximos
+variavel latente
+álgebra Linear
+regressão linear
+logaritmo
+regressão logística
+aprendizado de máquinas
+cadeia markov
+matriz
+significar
+significa erro absoluto
+erro quadrado médio
+mediana
+modo
+modelo
+Método de Monte Carlo
+média móvel
+n grama
+classificador de bayas nao
+rede neural
+distribuição normal
+hipótese nula
+função objetiva
+superação
+valor p
+ranking da página
+Perl
+tabela dinâmica
+Distribuição de veneno
+distribuição posterior
+análise preditiva
+modelagem preditiva
+análise do componente principal
+distribuição prévia
+distribuição de probabilidade
+"quantile, quartil"
+floresta aleatória
+regressão
+aprendizagem de reforço
+Erro quadrático médio da raiz
+rubi
+curva S
+escalar
+correlação em série
+Concha
+dados espaciotemporais
+desvio padrão
+distribuição normal normal
+pontuação padronizada
+"Estratos, amostragem estratificada"
+aprendizagem supervisionada
+máquina de vetor de suporte
+distribuição t
+quadro
+dados da série temporal
+aprendizagem sem supervisão
+variância
+vetor
+Espaço vetorial
+Teste ácido
+agregação
+anonimização
+identificação e captura automática (aidc)
+análise comportamental
+grande cientista de dados
+em cascata
+análise de registro de detalhes de chamadas (cdr)
+Cassandra
+dados do telefone celular
+análise de fluxo de cliques
+análise de classificação
+computação em nuvem
+análise de agrupamento
+armazenamento de dados a frio
+análise comparativa
+nuvem
+banco de dados em coluna ou banco de dados orientado a coluna
+comparadores
+processamento de eventos complexos (cep)
+confabulação
+análise de canais cruzados
+data de acesso
+painel de controle
+agregação de dados
+Arquitetura e design de dados
+base de dados
+administrador de banco de dados (dba)
+banco de dados como um serviço (daas)
+sistema de gerenciamento de banco de dados (dbms)
+Centro de dados
+limpeza de dados
+coleção de dados
+custodiante de dados
+tomada de decisão direcionada a dados
+escape de dados
+feed de dados
+Gestão de dados
+integração de dados
+integridade de dados
+migração de dados
+"modelo de dados, modelagem de dados"
+ponto de dados
+perfil de dados
+qualidade dos dados
+replicação de dados
+Repositório de dados
+cientista de dados
+segurança de dados
+conjunto de dados
+fonte de dados
+administrador de dados
+Visualização de dados
+armazém de dados
+de identificação
+dados demográficos
+trovão profundo
+cache distribuído
+objeto distribuído
+processo de distribuição
+sistema de arquivos distribuídos
+bancos de dados de armazenamento de documentos
+gerenciamento de documento
+broca
+pesquisa elástica
+análise de eventos
+dados externos
+"extrair, transformar e carregar (etl)"
+análise exploratória
+canal
+computação em grade
+bancos de dados gráficos
+hcatalog
+hdfs (sistema de arquivos distribuídos hadoop)
+colméia
+matiz
+análise no banco de dados
+banco de dados na memória
+grade de dados na memória (imdg)
+Internet das Coisas
+lojas de valores-chave
+base de dados de valores-chave
+latência
+dados vinculados
+balanceamento de carga
+análise de localização
+Dados de localização
+arquivo de log
+dados gerados por máquina
+dados machine2machine
+misture
+metadados
+banco de dados mpp
+bancos de dados multidimensionais
+bancos de dados multivalores
+análise de rede
+bancos de dados de objetos
+análise de imagem baseada em objeto
+processamento analítico on-line (olap)
+processamento transacional online (oltp)
+aliança open data center (odca)
+armazenamento de dados operacional (ods)
+análise paralela de dados
+Invocação do método paralelo (pmi)
+processamento paralelo
+consulta paralela
+reconhecimento de padrões
+pentaho
+porco
+dados públicos
+inquerir
+análise de consulta
+re-identificação
+dados em tempo real
+motor de recomendação
+data de referência
+análise de risco
+análise de causa raiz
+análise de roteamento
+escalabilidade
+esquema
+dados de pesquisa
+dados semi-estruturados
+análise de sentimentos
+servidor
+análise espacial
+tempestade
+software como serviço (saas)
+armazenamento
+dados estruturados
+linguagem de consulta estruturada (sql)
+análise de texto
+mineração de texto
+dados transacionais
+economia
+dados não estruturados
+valor
+visualização
+dados meteorológicos
+bancos de dados xml
+Java
+c ++
+matemática
+oitava
+faísca
+Tubarão

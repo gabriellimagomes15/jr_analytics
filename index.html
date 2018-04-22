@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jobs Vacancies and Companies Reviews Analysis</title>
+
+  <script src="http://code.jquery.com/jquery-3.2.1.js"></script>
+  <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+  <script type="text/javascript" src='js/d3.min.js'></script>
+  <script type="text/javascript" src='js/charts.js'></script>
+  <script type="text/javascript" src='js/d3ScaleColor.js'></script>
+  <script type="text/javascript" src='js/cloud.js'></script> 
+  <script type="text/javascript" src='js/bootstrap/bootstrap.min.js'></script> 
+
+  <script type="text/javascript" src='js/jobs.js'></script>
+  <script type="text/javascript" src='js/reviews.js'></script>
+
+  <script src="https://code.highcharts.com/maps/highmaps.js"></script>
+  <script src="https://code.highcharts.com/maps/modules/data.js"></script>
+  <script src="https://code.highcharts.com/mapdata/custom/europe.js"></script>
+  
+  <script src='js/usa-and-canada.js'></script>
+
+  <script src="https://use.fontawesome.com/e6b4ddaa2c.js"></script>
+
+  <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+
+  <link rel="stylesheet" type="text/css" href="css/charts.css">
+  <link rel="stylesheet" type="text/css" href="css/custom.css">
+
+  <link href="css/sb-admin.css" rel="stylesheet">
+
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  
+  <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+</head>
+<body class="fixed-nav sticky-footer bg-dark" id="page-top" >
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+    <a class="navbar-brand" href="index.html">Home</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse collapse " id="navbarResponsive">
+      <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Home">
+          <a class="nav-link" href="#initial" data-toggle="tab">
+            <i class="fa fa-fw fa-home"></i>
+            <span class="nav-link-text">Home</span>
+          </a>
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
+          <a id='menudashboardjobs' class="nav-link" href="#dashboardjobs" data-toggle="tab">
+            <i class="fa fa-fw fa-dashboard"></i>
+            <span class="nav-link-text">Dashboard Jobs Vacancies</span>
+          </a>
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
+          <a id='menudashboardreviews' class="nav-link" href="#dashboardreviews" data-toggle="tab">
+            <i class="fa fa-fw fa-dashboard"></i>
+            <span class="nav-link-text">Dashboard Companies Reviews</span>
+          </a>
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="About">
+          <a class="nav-link" href="#about" data-toggle="tab">
+            <i class="fa fa-fw fa-info"></i>
+            <span class="nav-link-text">About</span>
+          </a>
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Contact">
+          <a class="nav-link" href="#contact" data-toggle="tab">
+            <i class="fa fa-fw fa-pencil"></i>
+            <span class="nav-link-text">Contact</span>
+          </a>
+        </li>
+      </ul>
+      <ul class="navbar-nav sidenav-toggler">
+        <li class="nav-item">
+          <a class="nav-link text-center" id="sidenavToggler">
+            <i class="fa fa-fw fa-angle-left"></i>
+          </a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a href="https://github.com/gabriellimagomes15"  target="_blank"
+         class="header-logo-invertocat my-0" style="padding: 5px 10px" data-toggle="tooltip" 
+         data-placement="bottom" title="GitHub!" >
+            <svg aria-hidden="true" class="octicon octicon-mark-github" style="fill: #fff;"
+              height="30" version="1.1" viewBox="0 0 16 16" width="32">
+              <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+            </svg>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
+            <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="content-wrapper tab-content">
+    <div id='initial' class="container-fluid tab-pane fade in active " role="tabpanel">
+      <div class="jumbotron container">
+          <div class="col-md-10">
+            <h1>Jobs Vacancies Analysis</h1>
+          </div>
+          <div class="col-md-10">
+            <p> This is a web app to analysis jobs vacancies and companies reviews data, with dashboards about 
+              posts vacancies by date, skills (tech skills, languages and educations), jobs by cities, positions, cluster data mining of requeriments, and posts reviews by date, words most commented (pros and cons), cities and reviewer position</p>
+            <p>The data were collected in Glassdoor, Love Mondays and Indeed by web scrapping.</p>
+            <div class="alert alert-success">
+              <p><strong> <span class='numbjobs'> More of 1,000 </span> jobs vacancies.</strong></p>
+              <p><strong> <span class='numbreviews'> More of 100,000 </span> companies reviews.</strong></p>
+            </div>
+          </div>
+      </div>
+    </div>
+
+    <div id='dashboardjobs' class="container-fluid tab-pane fade  " role="tabpanel">
+      <!-- Breadcrumbs-->
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active">Dashboard Jobs Vacancies </li>
+      </ol>
+      <!-- Boxes Informations -->
+      <div class="row">
+        <div class="col-xl-3 col-sm-6 mb-3">
+          <div class="card text-white bg-primary o-hidden h-70">
+            <div class="card-body boxone">
+              <div class="card-body-icon">
+                <i class="fa fa-fw fa-database"></i>
+              </div>
+              <div id='boxnumber' class="mr-5"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-3">
+          <div class="card text-white bg-warning h-70">
+            <div class="card-body boxtwo">
+              <div class="card-body-icon">
+                <i class="fa fa-fw fa-globe"></i>
+              </div>
+              <div id='boxnumbertwo' class="mr-5"></div>
+            </div>
+            <div class="dropdown" style="">
+                <select id='selcountry' class="selectpicker bg-warning text-white" style="width: 100%">
+                  <option value="todos"> Todos </option>
+                </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-3">
+          <div class="card text-white bg-success o-hidden h-70">
+            <div class="card-body boxthird">
+              <div class="card-body-icon">
+                <i class="fa fa-fw fa-location-arrow"></i>
+              </div>
+              <div id='boxnumberthird' class="mr-5"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-3">
+          <div class="card text-white bg-danger o-hidden h-70">
+            <div class="card-body boxfour">
+              <div class="card-body-icon">
+                <i class="fa fa-fw fa-building"></i>
+              </div>
+              <div id='boxnumberfour' class="mr-5"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Boxes Informations -->
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-line-chart"></i> Jobs Vacancies by Date</div>
+        <div id='linechart' class="card-body" ></div>
+        <div class="card-footer small text-muted">Updated in <span></span></div>
+      </div>
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="fa fa-bar-chart"></i> Jobs Position</div>
+            <div id='barchart' class="card-body"></div>
+            <div class="card-footer small text-muted">Updated in <span></span></div>
+          </div>
+          
+          <div class="card mb-3">
+            <div class="card-header"><i class="fa fa-trello"></i> Treemap of Jobs Vacancies by City</div>
+            <div id='treemap' class="card-body"></div>
+            <div class="card-footer small text-muted">Updated in <span></span></div>
+          </div>
+          
+          <div class="card mb-3">
+            <div class="card-header"><i class="fa fa-map"></i> Map of Requirements Cluster by States</div>
+            <div id='clustermap' class="card-body col-sm-12 my-auto" ></div>
+                <!--div id="container" style="height: 600px; min-width: 310px; max-width: 980px; margin: 0 auto"></div-->
+            <div class="card-footer small text-muted">Updated in <span></span></div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="fa fa-pie-chart"></i> Languages Requirements</div>
+            <div id='piechart' class="card-body"></div>
+            <div class="card-footer small text-muted">Updated in <span></span></div>
+          </div>
+          
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="fa fa-pie-chart"></i> Education Requirements</div>
+            <div id='piecharttwo' class="card-body"></div>
+            <div class="card-footer small text-muted">Updated in <span></span></div>
+          </div>
+          
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="fa fa-circle"></i> Tech Skills Requirements</div>
+            <div id='bubblechart' class="card-body"></div>
+            <div class="card-footer small text-muted">Updated in <span></span></div>
+          </div>
+        </div>        
+      </div>
+    </div> 
+    <!-- FIM DIV dashboardjobs-->
+
+    <div id='dashboardreviews' class="container-fluid tab-pane fade  " role="tabpanel">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active">Dashboard Companies Reviews</li>
+      </ol>
+      <div class="row">
+        <div class="col-xl-3 col-sm-6 mb-3">
+          <div class="card text-white bg-inf o-hidden h-70 boxonereview">
+            <div class="card-body ">
+              <div class="card-body-icon">
+                <i class="fa fa-fw fa-database"></i>
+              </div>
+              <div id='boxonereview' class="mr-5"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-3">
+          <div class="card text-white bg-dar h-70  boxtworeview" >
+            <div class="card-body ">
+              <div class="card-body-icon">
+                <i class="fa fa-fw fa-globe"></i>
+              </div>
+              <div id='boxtworeview' class="mr-5"></div>
+            </div>
+            <div class="dropdown" style="">
+                <select id='selcompany' class="selectpicker bg-dar text-white" 
+                        style="width: 100%; ">
+                  <option value="todos"> Todos </option>
+                </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-3">
+          <div class="card text-white bg-succes o-hidden h-70 boxthirdreview">
+            <div class="card-body ">
+              <div class="card-body-icon">
+                <i class="fa fa-fw fa-location-arrow"></i>
+              </div>
+              <div id='boxthirdreview' class="mr-5"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-3">
+          <div class="card text-white bg-inf o-hidden h-70 boxfourreview" >
+            <div class="card-body ">
+              <div class="card-body-icon">
+                <i class="fa fa-fw fa-building"></i>
+              </div>
+              <div id='boxfourreview' class="mr-5"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-bar-chart"></i> Reviews by Year</div>
+        <div id='barchartreviews' class="card-body" ></div>
+        <div class="card-footer small text-muted">Updated in <span></span></div>
+      </div>
+      <div class="row">
+          <div class="col-lg-6">
+            <div class="card mb-3">
+              <div class="card-header">
+                <i class="fa fa-circle"></i> Cons Comments</div>
+              <div id='bubblecons' class="card-body"></div>
+              <div class="card-footer small text-muted">Updated in <span></span></div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="card mb-3">
+              <div class="card-header">
+                <i class="fa fa-circle"></i> Pros Comments</div>
+              <div id='bubblepros' class="card-body"></div>
+              <div class="card-footer small text-muted">Updated in <span></span></div>
+            </div>            
+          </div>
+      </div>
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-bar-chart"></i> Total of Positions (top 10)</div>
+        <div id='positionchart' class="card-body"></div>
+        <div class="card-footer small text-muted">Updated in <span></span></div>
+      </div>
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="card mb-3">
+            <div class="card-header"><i class="fa fa-trello"></i> Treemap of Reviews  by City</div>
+            <div id='treemapreview' class="card-body"></div>
+            <div class="card-footer small text-muted">Updated in <span></span></div>
+          </div>
+          <!--div class="card mb-3">
+            <div class="card-header"><i class="fa fa-map"></i> Map of Requirements Cluster by States</div>
+            <div id='clustermap' class="card-body col-sm-12 my-auto" ></div>
+                <!--div id="container" style="height: 600px; min-width: 310px; max-width: 980px; margin: 0 auto"></div>
+            <div class="card-footer small text-muted">Updated in <span></span></div>
+          </div-->
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="fa fa-pie-chart"></i> Recommends </div>
+            <div id='pierecommend' class="card-body"></div>
+            <div class="card-footer small text-muted">Updated in <span></span></div>
+          </div>
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="fa fa-pie-chart"></i> Recommends Predict </div>
+            <div id='piepredrecommend' class="card-body"></div>
+            <div class="card-footer small text-muted">Updated in <span></span></div>
+          </div>
+        </div>        
+      </div>  
+    </div> 
+    <!-- FIM DIV dashboardreviews-->
+
+    <div id='about' class="container-fluid tab-pane fade " role="tabpanel">
+      <div class="container jumbotron">
+        <div class="col-md-12">
+          <h1>About</h1>
+        </div>
+        <div class="col-md 10">
+          <p>
+            This application aims to make analysis of job vacancies for data science and technology company reviews.
+          </p>
+          <p>
+            The data was collected by doing a web scrapping on the employment site, <a href='https://www.glassdoor.com/index.htm'> glassdoor</a>, <a href='https://www.indeed.com'> indeed</a> and 
+            <a href='https://www.lovemondays.com.br'> lovemondays</a> . <br>
+            The code can be acessed on the <a href='https://www.github.com/gabriellimagomes15'> github </a>f
+            <!--This data has undergone a cleanup and transformation process and has also been applied clustering data mining algorithm to identify provinces that have similar requirements.-->
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div id='contact' class="container-fluid tab-pane fade " role="tabpanel">
+        <div class="jumbotron container">
+          <div class="row">
+            <div class="col-md-10">
+              <h1>Contact me</h1>
+            </div>
+            <div class="col-md-10">
+              <h3><b>Email:</b></h3> 
+              <h4>gabriel.lg08@gmail.com</h4>
+            </div>
+            <div class="col-md-10">
+              <h3><b>Phone</b></h3> 
+              <h4>+55 61 985094857</h4>
+            </div>
+            <div class="col-sm-6">
+              <a href="https://github.com/gabriellimagomes15">
+                  <img style="width:50%;margin-left: -1em;" 
+                  src="https://www.monolitonimbus.com.br/wp-content/uploads/2017/12/github.png"/>
+              </a>
+            </div>
+            <div class="col-sm-6">
+              <a href="https://www.linkedin.com/in/gabriellimagomes/">
+                <img style="width:15%" 
+                  src="https://media.licdn.com/mpr/mpr/shrink_200_200/AAEAAQAAAAAAAANyAAAAJGRlZTNlZDQwLTk4YTItNDA1MS04MzBjLWJmNGQ5M2RmZGUxYw.png"/>
+                </a>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <footer class="sticky-footer">
+      <div class="container">
+        <div class="text-center">
+          <small>Copyright © Gabriel Lima Gomes 2018</small>
+        </div>
+      </div>
+    </footer>
+    <a class="scroll-to-top rounded" href="#page-top" style="display: inline;">
+      <i class="fa fa-angle-up"></i>
+    </a>
+
+<script>
+    
+  // CRIANDO OBJETO PARA GERAR OS 'tooltip' DOS GRÁFICOS
+  var tooltip = d3.select("body").append("div").attr("class", "toolTip");
+
+  // CRIANDO OBJETO PARA CONVERTER DATAS
+  var parseTime = d3.timeParse("%Y-%m-%d");
+
+  // CRIANDO OBJETO PARA FORMATAR NÚMERO
+  var format = d3.format(",d"); 
+
+  //VARIAVEIS PARA O CAMINHO DOS ARQUIVOS E NOME DAS 'KEYs' DO OBJETO ONDE SERÃO ARMAZENADOS
+  var paths = ['data/jobsFinal.csv', "data/reviewFinal.csv","data/clusterReq2.csv","data/recommendPred.csv"]
+  var names = ['jobs','reviews','clusterReq','predRecom']
+  for(var i = 0; i < paths.length; i++){
+    readData(paths[i],names[i])  
+  }
+
+
+  
+  //FUNÇÃO PARA INSERIR O NÚMERO TOTAL DE REGISTROS NA PÁGINA INICIAL
+  function numJobsReview(){
+    console.log(dados)
+    d3.select('.numbjobs').text(dados.jobs.length.toLocaleString('de-DE'))
+    d3.select('.numbreviews').text(dados.reviews.length.toLocaleString('de-DE')) 
+  }
+
+  //CHAMANDO A FUNÇÃO numjobs COM DALEY
+  setTimeout(numJobsReview,1000);
+
+
+
+  // FUNÇÃO PARA MONSTAR OS GRÁFICOS AO SELECIONAR O MENU 'DASHBOARDS JOBS VACANCIES'
+  $('#menudashboardjobs').on('click',function(e){
+      setTimeout(chartsJobs,250,'');
+  })
+
+  // FUNÇÃO PARA REFAZER OS GRÁFICOS AO SELECIONAR UM PAÍS
+  $('#selcountry').on('change',function(){
+    chartsJobs(this.value)
+  })
+
+
+  //CHAMANDO FUNÇÃO PARA MONTAR GRÁFICOS A SELECIONA O MENU companies Reviews
+  $('#menudashboardreviews').on('click',function(e){
+      setTimeout(chartsReviews,250,'');
+  })
+
+  //REFAZENDO GRÁFICOS AO SELECIONA UMA EMPRESA NO COMBO
+  $('#selcompany').on('change',function(){
+    chartsReviews(this.value)
+  })
+
+
+  // FUNÇÃO PARA REDIMENSIONAR OS GRÁFICOS AO ALTERAR O ZOOM DA PÁGINA
+  function resize(){
+    if( $('#dashboardjobs').hasClass('active')) {
+      $('.card-body > *').empty()
+      chartsJobs($('#selcountry').val()) 
+    }
+  }
+
+
+  $("#sidenavToggler").click(function(e) {
+    e.preventDefault();
+    $("body").toggleClass("sidenav-toggled");
+    $(".navbar-sidenav .nav-link-collapse").addClass("collapsed");
+    $(".navbar-sidenav .sidenav-second-level, .navbar-sidenav .sidenav-third-level").removeClass("show");
+  });
+  $('.navbar-toggler').click(function(e){
+    var id = $(this).data("target")
+    $( id).addClass('show')    
+  })
+</script>
+	</body>
+</html>

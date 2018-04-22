@@ -1,0 +1,63 @@
+/*******************************************
+      CLASS TO MODIFY GRAPHICS
+*********************************************/
+
+.ui-dialog-titlebar-close{
+  display: none !important;
+  visibility: hidden !important;
+}
+.bar {
+  fill: steelblue;
+}
+
+.bar:hover {
+  fill: brown;
+}
+
+.hover:hover {
+  fill: brown;  
+}
+
+.axis--x path {
+  display: '';
+}
+
+.toolTip {
+	/*opacity: 0.6;*/
+    position: absolute;
+    display: none;
+    min-width: 80px;
+    height: auto;
+    background: none repeat scroll 0 0 #fffccc;
+    border: 0 none;
+    border-radius: 8px 8px 8px 8px;
+    box-shadow: -3px 3px 15px #888888;
+    text-align: center;
+    padding: 5px;
+	
+}
+
+.borderDiv{
+  border: solid 1px #ccc;
+  box-shadow: 2px 2px 2px #ccc;
+  margin: 5px 0 5px 0;
+}
+
+/*ALTERA COR DA ABA NA PAGINA DE ESTATÍSTICAS*/
+.ui-state-active{
+  border: 1px solid #0a630a !important;
+  background: #4682b4 !important;
+}
+
+.legend {
+  float: right;
+  font-family: "Verdana";
+  font-size: .9em;
+}
+
+#box h2{
+  margin-top:0px;
+  font-weight: bolder !important; 
+}
+
+

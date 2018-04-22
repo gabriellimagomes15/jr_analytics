@@ -1,0 +1,22 @@
+  .card.text-whit{e
+    box-shadow: 7px 7px 5px #ccc;
+  }
+  .fade.in {
+    opacity: 1;
+  }
+
+  h1 {
+    border-bottom: 3px solid #ccc;
+    padding: 0 0 10px 0;
+  }
+
+  .card-body{
+    text-align: center;
+  }
+
+  .dropdown-menu-center {
+    left: 50%;
+    right: auto;
+    text-align: center;
+    transform: translate(-50%, 0);
+  }
