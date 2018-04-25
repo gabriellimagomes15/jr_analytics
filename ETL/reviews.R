@@ -4,6 +4,173 @@
 
 #### **** WEB SCRAPPING REVIEWS **** ####
 
+### FUNÇÃO PARA CAPTURAR REVISÕES DO SITE Love Mondays
+reviewsLoveMondays <- function(){
+  print('reviewsLoveMondays')
+  urls     <- c('https://www.lovemondays.com.br/trabalhar-na-ifood/avaliacoes/pagina/',
+                'https://www.lovemondays.com.br/trabalhar-na-nubank/avaliacoes/pagina/',
+                'https://www.lovemondays.com.br/trabalhar-na-ibm/avaliacoes/pagina/',
+                'https://www.lovemondays.com.br/trabalhar-na-microsoft/avaliacoes/pagina/',
+                'https://www.lovemondays.com.br/trabalhar-na-google/avaliacoes/pagina/',
+                'https://www.lovemondays.com.br/trabalhar-na-oracle/avaliacoes/pagina/') #1
+  
+  reviewDF <- data.frame()
+  
+  for(urlPage in urls){
+    tryCatch({
+      ## READ THE FIRST PAGE TO GET THE COMPANY'S NAME AND TOTAL OF PAGES
+      webPage  <- read_html(paste(urlPage,'1',sep = '') )
+      company  <- webPage %>% html_nodes('.lm-CompanyHeader-companyName') %>% html_text()
+      
+      ## RECUPERANDO O TOTAL DE AVALIA??ES
+      totalRew   <- as.numeric(webPage %>% html_nodes('.lm-Tabs-default--companyHeader .lm-Tabs-default-item.is-active') %>% html_text() %>% gsub('[[:alpha:]]|\\s|[[:punct:]]','', .))
+      if(!identical(totalRew,numeric(0)) & !is.na(totalRew) ){
+        totalPages <- round(totalRew/10)  
+      }else{
+        totalPages <- 1
+      }
+      for( page in 1:totalPages){
+        cat('==> Page: ',page)
+        urlPage2 <- paste(urlPage,page, sep = '')
+        cat('\t',urlPage2)
+        
+        webPage <- read_html(urlPage2)
+        nodes   <- webPage %>% html_nodes('section .lm-List-default .lm-List-default-row')
+        
+        ids     <- nodes %>% html_nodes('.lm-List-item-header-title a') %>% html_attr('href') %>% gsub('[[:alpha:]]|\\s|[[:punct:]]','', .)
+        ratings <- c()
+        for(review in nodes){
+          rating <- 5 * (review %>% html_nodes('.lm-RatingStar-starContainer div:nth-child(2).lm-RatingStar-starContainer-starsActive') %>% 
+                           html_attrs() %>% .[[1]] %>% unlist(.) %>% paste(.,collapse = ' ') %>% 
+                           gsub('[[:alpha:]]|\\s|[[:punct:]]','', .) %>% as.numeric(.) / 100)
+          ratings <- c(ratings,rating)
+        }## END review in nodes
+        
+        reviews <- scrapReviews(nodes = nodes,tagDate = '.lm-Company-dateTime-label', tagTitle = '.lm-List-item-header-title',
+                                tagStatus = '.reviewer ',tagLocation = '.lm-List-item-contributions',
+                                tagRecommend = '.lm-Review-contribution p:nth-child(3)',tagPros = '.lm-Review-contribution p:nth-child(1)',
+                                tagCons = '.lm-Review-contribution p:nth-child(2)',tagAdvice = 'ni' ,
+                                company = company,ids = ids, ratings = ratings)
+        
+        reviewDF <- rbind(reviewDF,reviews)
+        fwrite(reviewDF, paste('data/reviewLoveM-',Sys.Date(),'.csv',sep = ''))
+      }## END FOR totalPages
+    }, error = function(e){
+      print(paste('ERROR IN FOR URLS: ', e , sep = ' ') )
+    })
+  }#END FOR urls
+  print("***** END REVIEWS LOVE MONDAYS ****")
+  
+}
+
+reviewsGlassDoor <- function(){
+  print('reviewsGlassDoor')
+  urls  <- c('https://www.glassdoor.com/Reviews/Dell-Reviews-E1327_P',  
+             'https://www.glassdoor.com/Reviews/IBM-Reviews-E354_P',
+             'https://www.glassdoor.com/Reviews/Microsoft-Reviews-E1651_P',
+             'https://www.glassdoor.com/Reviews/Google-Reviews-E9079_P',
+             'https://www.glassdoor.com/Reviews/Oracle-Reviews-E1737_P',
+             'https://www.glassdoor.com/Reviews/Tesla-Reviews-E43129_P')
+  reviewDF <- data.frame()
+  
+  
+  for(urlPage in urls){
+    tryCatch({
+      webPage  <- read_html(paste(urlPage,'1','.htm',sep = ''))
+      company  <- webPage %>% html_nodes('.module.filterableContents .h2') %>% html_text()
+      
+      totalRew   <- as.numeric(webPage %>% html_nodes('.padTopSm.margRtSm.margBot.minor') %>% html_text() %>% gsub('[[:alpha:]]|\\s|[[:punct:]]','', .))
+      
+      if(!identical(totalRew,numeric(0)) & !is.na(totalRew) ){
+        totalPages <- round(totalRew/10)  
+      }else{
+        totalPages <- 1
+      }
+      ## LOOP TO READ EACH PAGE
+      for( page in 1:totalPages){
+        cat('==> Page: ',page)
+        urlPage2 <- paste(urlPage,page,'.htm', sep = '')
+        cat('\t',urlPage2)
+        
+        webPage <- read_html(urlPage2) ## SCRAPPING THE PAGE
+        nodes   <- webPage %>% html_nodes('.empReview') ## GET NODES THAT CONTAIN THE REVIEWS
+        
+        ## RECUPERANDO OS IDS DAS AVALIA??ES
+        ids <- nodes %>% html_attr('id') %>% gsub('[[:alpha:]]|\\s|[[:punct:]]','', .) #html_attr('id') 
+        
+        ## RECUPERANDO RATING DAS AVALIA??ES
+        ratings <- nodes %>% html_nodes('.rating span') %>% html_attr('title') %>% gsub('[[:alpha:]]|\\s|[[:punct:]]','', .) %>% as.numeric(.) / 10
+        
+        reviews <- scrapReviews(nodes = nodes,tagDate = '.date', tagTitle = '.tbl .h2.summary',
+                                tagStatus = '.tbl.reviewMeta .authorJobTitle.middle',tagLocation = '.tbl.reviewMeta .authorLocation.middle',
+                                tagRecommend = '.recommends .tightLt:nth-child(1)',tagOutlook = '.recommends .tightLt:nth-child(2)',
+                                tagCeo = '.recommends .tightLt:nth-child(3) .showDesk',tagPros = '.pros.mainText',
+                                tagCons = '.cons.mainText',tagAdvice = '.adviceMgmt' ,
+                                company = company,ids = ids, ratings = ratings)
+        
+        reviewDF <- rbind(reviewDF,reviews)
+        fwrite(reviewDF, paste('data/reviewGlassD-',Sys.Date(),'.csv',sep = ''))
+      }## END FOT totalPages
+    }, error = function(e){
+      print(paste('ERROR IN FOR URLS: ', e , sep = ' ') )
+    })
+  }## END FOR urls
+  print("***** END REVIEWS GLASSDOOR ****")
+  
+}
+
+reviewsIndeed <- function(){
+  print('reviewsIndeed')
+  urls <- c('https://www.indeed.com.br/cmp/Oracle/reviews',
+            'https://www.indeed.com.br/cmp/Ifood/reviews',
+            'https://www.indeed.com.br/cmp/IBM/reviews',
+            'https://www.indeed.com.br/cmp/Microsoft/reviews',
+            'https://www.indeed.com.br/cmp/Google/reviews') #1
+  reviewDF <- data.frame()
+  
+  urlPage <- urls
+  for(urlPage in urls){
+    tryCatch({
+      ## READ THE FIRST PAGE TO GET THE COMPANY'S NAME AND TOTAL OF PAGES
+      webPage  <- read_html(paste(urlPage,'?start=0',sep = '') )
+      company  <- webPage %>% html_nodes('.cmp-company-name') %>% html_text()
+      
+      ## RECUPERANDO O TOTAL DE AVALIA??ES
+      totalRew   <- as.numeric(webPage %>% html_nodes('.cmp-filter-result') %>% html_text() %>% gsub('[[:alpha:]]|\\s|[[:punct:]]','', .))
+      
+      if(!identical(totalRew,numeric(0)) & !is.na(totalRew) ){
+        totalPages <- round(totalRew/21)  
+      }else{
+        totalPages <- 1
+      }
+      for( page in 0:totalPages){
+        cat('\n\n==> Page: ',page)
+        urlPage2 <- paste(urlPage,'?start=',as.character(page*20), sep = '')
+        cat('\t',urlPage2)
+        
+        webPage <- read_html(urlPage2)
+        nodes   <- webPage %>% html_nodes('.cmp-review-container')
+        ids     <- nodes %>% html_nodes('.cmp-review') %>% html_attr('data-tn-entityid') #%>% gsub('[[:alpha:]]|\\s|[[:punct:]]','', .)
+        ratings <- nodes %>% html_nodes('.cmp-ratings meta') %>% html_attr('content')
+        
+        reviews <- scrapReviews(nodes = nodes,tagDate = '.cmp-review-date-created', tagTitle = '.cmp-review-title',
+                                tagStatus = '.cmp-reviewer-job-title',tagLocation = '.cmp-reviewer-job-location',
+                                tagRecommend = 'ni',tagPros = '.cmp-review-pros',
+                                tagCons = '.cmp-review-cons',tagAdvice = 'ni' ,
+                                company = company,ids = ids, ratings = ratings)
+        
+        reviewDF <- rbind(reviewDF,reviews)
+        fwrite(reviewDF, paste('data/reviewIndeed-',Sys.Date(),'.csv',sep = ''))
+      }## END FOR totalPages
+      Sys.sleep(3)
+    }, error = function(e){
+      print(paste('ERROR IN FOR URLS: ', e , sep = ' ') )
+    })
+  }#END FOR urls
+  print("***** END REVIEWS INDEED ****")
+}
+
+
 
 ### FUNÇÃO PARA REALIZAR WEB SCRAPPING DE AVALIA??ES SOBRE EMPRESAS. 
 ## PARAMETROS: 
@@ -23,6 +190,7 @@
 # inseridos na p?gina de diferentes formas, inclusive passando como atributo da tag, assim, sendo necess?rio outra metodologia para recupera-los)
 # ratings = RATING RECUPERADOS NA CLASSE PRINCIPAL E SER?O INSERIDOS NO FINAL NO DATAFRAME. (Os rating s?o passados como parametro, porque s?o 
 # inseridos na p?gina de diferentes formas, inclusive passando como atributo da tag, assim, sendo necess?rio outra metodologia para recupera-los)
+
 scrapReviews <- function(nodes = '',tagDate = 'ni', tagTitle = 'ni',tagStatus = 'ni', tagLocation = 'ni',tagRecommend = 'ni',
                          tagOutlook = 'ni', tagCeo = 'ni', tagPros = 'ni', tagCons = 'ni', tagAdvice = 'ni', company = '', ids = '', ratings = ''){
   
@@ -146,6 +314,7 @@ cleanReviewGlassD <- function(dados){
   return(dadosClean)
 }## END cleanReviewGlassD function
 
+
 cleanReviewIndeed <- function(dados){
   dadosClean       <- dados
   dadosClean$dateClean <- lubridate::dmy(as.character(dadosClean$date))
@@ -249,43 +418,28 @@ cleanReviewLoveM <- function(dados){
   #fwrite(dadosClean,'data/reviewLoveM.csv')
 } ## END cleanReviewLoveM function
 
-
+### TRANSFORMAÇÕES NECESSÁRIAS PARA SEREM APLICADAS NA BASE DE DADOS FINAL
 cleanReviewFinal <- function(){
-  load('data/reviews.RData')
-  reviewClean <- reviews
+  #load('data/reviews.RData')
+  #reviewClean <- reviews
+  reviewClean <- fread('data/reviewFinal.csv',encoding = 'UTF-8')
 
   reviewClean[,c('pros','cons','title')] <- cleanText(reviewClean,c('pros','cons','title'),
-                                                      stopWords = c('reviews','pra','empresa','�','trabalho','ser','muito','ponto','positivo','negativo',
+                                                      stopWords = c('reviews','pra','empresa','?','trabalho','ser','muito','ponto','positivo','negativo',
                                                                     'can','like','make','many',
                                                                     stopwords('en'),stopwords('sp') )
                                                       ,specialChar = T)
 
+  reviewClean$recommend <- gsub('Sim','Yes',reviewClean$recommend)
+  reviewClean$recommend <- gsub('Não','No',reviewClean$recommend)
+  
   fwrite(dados,'data/reviewFinal.csv')  
 }
 
 
-dados <- fread('data/reviewFinal.csv')
-dados[,c('title', 'pros', 'cons')] <- reviewClean[,c('title', 'pros', 'cons')]
-fwrite(dados,'data/reviewFinal.csv')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#dados <- fread('data/reviewFinal.csv')
+#dados[,c('title', 'pros', 'cons')] <- reviewClean[,c('title', 'pros', 'cons')]
+#fwrite(dados,'data/reviewFinal.csv')
 
 
