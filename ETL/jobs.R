@@ -101,7 +101,7 @@ jobsLoveM <- function(){
     # a url é fornecida até o parametro que indica a página '_IP', no script as páginas são inseridas dinâmicamente
   urls    <- c('https://www.lovemondays.com.br/pesquisa/vaga/pagina/1?external_job_city_id=&external_job_city_name=&q=Data+Scientist')
             #c('https://www.lovemondays.com.br/pesquisa/vaga/pagina/1?external_job_city_id=&external_job_city_name=&q=Data+Analyst')
-  country <- c('Brasil')
+  country <- c('brazil')
   urlDF   <- data.frame(urls, country, stringsAsFactors = F)
   dataDF  <- data.frame()
   
@@ -189,8 +189,8 @@ jobsLoveM <- function(){
 
 jobsIndeed <- function(){
   urlRoot <- 'https://www.indeed.com.br/viewjob'
-  urls    <- c('https://www.indeed.com.br/empregos?q=data+scientist&l=Brasil&start=',
-               'https://www.indeed.com.br/empregos?q=cientista+de+dados&l=Brasil&start=')
+  urls    <- c('https://www.indeed.com.br/empregos?q=data+scientist&l=Brazil&start=',
+               'https://www.indeed.com.br/empregos?q=cientista+de+dados&l=Brazil&start=')
   
   ## Loop para identificar aumtomaticamente o pa??s da consulta 
   country <- sapply(urls, function(x){
@@ -351,9 +351,9 @@ cleanJobsGlassDoor <- function(dados){
   #dadosClean[dadosClean$stateClean == 'Saguenay',]$stateClean <- 'QC'
   #dadosClean[dadosClean$stateClean == 'Ontario',]$stateClean <- 'ON'
   
-  
-  
-  dadosClean <- dadosClean[,c('id','positClean','companyClean','dateClean', 'skills','education','language','dateCollect','country','cityClean','stateClean','url')]
+  dadosClean$site <- "glassdoor"
+  dadosClean      <- dadosClean[,c('id','positClean','companyClean','dateClean', 'dateCollect','descClean','skills','education','language',
+                                   'cityClean','stateClean','country','url',"site")]
   
   #data.table::fwrite(dadosClean, 'data/jobsGlassDClean.csv')
   return(dadosClean)
@@ -424,7 +424,9 @@ cleanJobsLoveMond <- function(dados){
   
   dadosClean$dateClean <- dadosClean$date
   
-  dadosClean <- dadosClean[,c('id','positClean','companyClean','dateClean', 'skills','education','language','dateCollect','country','cityClean','stateClean','url')]
+  dadosClean$site <- "loveMondays"
+  dadosClean      <- dadosClean[,c('id','positClean','companyClean','dateClean', 'dateCollect','descClean','skills','education','language',
+                              'cityClean','stateClean','country','url',"site")]
   dadosClean <- delDup(dadosClean)
   
   #fwrite(dadosClean,'data/jobsLoveMClean.csv')
@@ -462,7 +464,7 @@ cleanJobsIndeed <- function(dados){
     dadosClean[is.na(dadosClean$company),]$company <- 'NI'
   
   print("Clean Company")
-  dadosClean$companyClean <- companyClean <- sapply(dadosClean$company, function(x){
+  dadosClean$companyClean <- sapply(dadosClean$company, function(x){
     x <- gsub("[[:punct:]]", " ", x) # remove punctuation
     x <- gsub("[[:digit:]]", " ", x) # remove numbers
     x <- gsub("^[ \t]{2,}", " ", x) # remove double space
@@ -470,7 +472,7 @@ cleanJobsIndeed <- function(dados){
     x
   })
   
-  
+  print("Clean city")
   ## Separando 'city' e 'state' do campo 'city_state'
   dadosClean$cityClean <- sapply(dadosClean$city_state, function(x){
     x <- gsub("[ \t]{2,}", "", x) # remove double space
@@ -483,7 +485,7 @@ cleanJobsIndeed <- function(dados){
     x
   })
   
-  
+  print("Clean state")
   ## Separando 'state' do campo 'city_state'
   dadosClean$stateClean <- sapply(dadosClean$city_state, function(x){
     x <- gsub('\n','',x)
@@ -498,10 +500,11 @@ cleanJobsIndeed <- function(dados){
   })
   
   dadosClean$dateClean <- ""
-  dadosClean <- convertDate(dadosClean)
+  dadosClean         <- convertDate(dadosClean)
+  dadosClean$site    <- "indeed"
   
-  dadosClean <- dadosClean[,c('id','positClean','companyClean','dateClean', 'skills','education','language','dateCollect','country',
-                              'cityClean','stateClean','url')]
+  dadosClean <- dadosClean[,c('id','positClean','companyClean','dateClean', 'dateCollect','descClean','skills','education','language',
+                              'cityClean','stateClean','country','url',"site")]
   
   #fwrite(dadosClean,'data/jobsIndeedClean.csv')
   dadosClean <- delDup(dadosClean)
@@ -511,8 +514,8 @@ cleanJobsIndeed <- function(dados){
 } ## END cleanJobsIndeed function
 
 
-cleanJobsFinal <- function(){
-  data    <- data.table::fread('data/jobsFinal.csv',encoding = 'UTF-8')
+cleanJobsFinal <- function(data){
+  #data    <- data.table::fread('data/jobsFinal.csv',encoding = 'UTF-8')
   
   data[data$country == 'brazil']$state <- paste(data[data$country == 'brazil']$state,'_br',sep = '')
   data[grepl('NI',data$state)]$state <- 'NI'
@@ -531,19 +534,9 @@ cleanJobsFinal <- function(){
     x <- paste(unique(x),collapse = ' ')
     x
   })
+  data$city <- gsub('S\\?o Paulo','São Paulo',data$city)
+  data$city <- gsub('Sao Paulo','São Paulo',data$city)
   
-  data$city <- gsub('Sao Paulo','S?o Paulo',data$city)
-  t <- data.frame(table(data$city))
-  
-  data$city <- gsub('Sao Paulo','S?o Paulo',data$city)
-  t <- data.frame(table(data$city))
-  
-  fwrite(data,'data/jobsFinal.csv')
-  
-}
-
-### TRANSFORMAÇÕES NECESSÃRIAS PARA SEREM APLICADAS NA BASE DE DADOS FINAL
-transJobsFinal <- function(){
-  
-  fwrite(data,'data/jobsFinal.csv')
+  #fwrite(data,'data/jobsFinal.csv')
+  return(data)
 }
