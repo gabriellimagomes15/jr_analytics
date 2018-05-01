@@ -8,7 +8,6 @@ source(paste(path[p],'/ETL/utils.R', sep = '') )
 source(paste(path[p],'/ETL/jobs.R', sep = '') )
 source(paste(path[p],'/ETL/reviews.R', sep = '') )
 source(paste(path[p],'/ETL/dataMining.R', sep = '') )
-#source(paste(path,'/ETL/dataMining.R', sep = '') )
 
 
 
@@ -18,6 +17,8 @@ source(paste(path[p],'/ETL/dataMining.R', sep = '') )
 #### **** MAIN **** ####
 
 #### >>>> JOBS VACANCIES ####
+
+#### WEB SCRAPING ####
 jobsIndeed      <- fread("data/jobs/jobsIndeedBrasil2018-04-24.csv", encoding = 'UTF-8') # jobsIndeed()
 jobsIndeedClean <- #fread("data/jobs/jobsIndeedClean2018-04-24.csv", encoding = 'UTF-8') #
                   cleanJobsIndeed(jobsIndeed)
@@ -44,32 +45,23 @@ jobsFinal  <- fread("data/jobsFinal.csv", encoding = 'UTF-8')
 colnames(mergeDados) <- colnames(jobsFinal)
 mergeDadosClean      <- cleanJobsFinal(mergeDados)
 
-table(jobsLoveMondClean$country)
-
-#tab <- table(mergeDadosClean$language) ###
-#View(tab)
 
 jobsFinal <- rbind(mergeDadosClean, jobsFinal)
 jobsFinal <- delDup(jobsFinal)
 jobsFinal <- cleanJobsFinal(jobsFinal)
+
 jobsFinal$country <- gsub("Brasil","brazil",jobsFinal$country)
+
+
 #fwrite(jobsFinal,paste('data/jobsFinal',Sys.Date(),'.csv',sep = "") )
 fwrite(jobsFinal,'data/jobsFinal.csv')
 
 
-table(jobsFinal$city)
+#### CLUSTER DATA MINING ####
+dados    <- data.table::fread("data/jobsFinal.csv")
+clusters <- clusterJobs(dados, c('position', 'skills', 'education', 'language','state','country'))
+fwrite(clusters, "data/clusterReq.csv")
 
-#print(getwd())
-#url <- c('https://www.glassdoor.com/Job/canada-data-scientist-jobs-SRCH_IL.0,6_IN3_KO7,21_IP','https://www.glassdoor.com/Job/us-data-scientist-jobs-SRCH_IL.0,2_IN1_KO3,17_IP')
-#url <- 'https://www.glassdoor.com/Job/brazil-data-scientist-jobs-SRCH_IL.0,6_IN36_KO7,21_IP'
-
-#collect(url)
-
-#dados <- data.table::fread('data/jobsGlassDoor.csv', stringsAsFactors = F, encoding = 'UTF-8')
-#load('data/jobsGlassDoor.RData')
-#dadosClean <- preProcess(dados)
-#fwrite(dadosClean,'data/dadosFinal2.csv')
-#clusterDM()
 
 #### >>>> COMPANIES' REVIEWS  ####
 #reviewsLoveMondays() ## SCRAPPING AVALIA??ES NO SITE LOVE MONDAYS

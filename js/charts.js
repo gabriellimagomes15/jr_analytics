@@ -177,8 +177,8 @@ function pieChar(params){
 
 	var radius = Math.min(width, height) / 1.8;
 	var color  = d3.scaleOrdinal(d3.schemeCategory10);
-		var scaleColor = d3.scaleSequential(d3["interpolateBlues"])
-					   .domain([0, d3.max(data, function(d) { return d.count; })]);
+	var scaleColor = d3.scaleSequential(d3["interpolateBlues"])
+				   	   .domain([0, d3.max(data, function(d) { return d.count; })]);
 
 	this.attr('transform', 'translate(' + (width/2.5) + ',' + (height/1.5) + ')')
 

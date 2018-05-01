@@ -1,9 +1,9 @@
 #### **** DATA MINING (CLUSTER) **** ####
-clusterDM <- function(data,columns = ''){
+clusterJobs <- function(data,columns = ''){
   #
-  data    <- fread('data/jobsFinal.csv',encoding = 'UTF-8')
-  data <- data[data$country == 'brazil',]
-  columns <- c('position', 'skills', 'education', 'language','state','country')
+  #data    <- fread('data/jobsFinal.csv',encoding = 'UTF-8')
+  #data <- data[data$country == 'brazil',]
+  #columns <- c('position', 'skills', 'education', 'language','state','country')
   
   dados_2 <- data[,..columns]
   
@@ -48,9 +48,10 @@ clusterDM <- function(data,columns = ''){
     
   colnames(clusterReq) <- c('state','Cluster','country')
   
+  retorno <- clusterReq[,c('state','Cluster','country')]
   #
-  data.table::fwrite(clusterReq, 'data/clusterReq2.csv')
-  return(clusterReq)
+  #data.table::fwrite(clusterReq, 'data/clusterReq2.csv')
+  return(retorno)
 }
 
 
