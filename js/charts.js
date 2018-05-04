@@ -254,8 +254,9 @@ function pieChar(params){
 							var vert   = i * height - offset;                       
 							return 'translate(' + horz + ',' + vert + ')';        
 						});                                                     
-
-    legend.append('rect')
+	
+	var total = d3.sum(data, function(d){ return d.count})
+	legend.append('rect')
     	.transition()
 		.delay(function(d,i){
 			return i * delayPie;
@@ -273,7 +274,8 @@ function pieChar(params){
 		.duration(duration)                
         .attr('x', legendRectSize + legendSpacing)              
         .attr('y', legendRectSize - legendSpacing)              
-        .text(function(d) { return d.value + '(' +(d.count.toLocaleString('de-DE')) + ')'; });
+        //.text(function(d) { return d.value + '(' +( d.count.toLocaleString('de-DE')) + ')'; });
+        .text(function(d) { return d.value + '(' + ( (d.count/total)*100).toLocaleString('de-DE') + '% )'; });
 }
 
 
@@ -409,13 +411,13 @@ function bubbleChart (params){
 		opacityHover = 1;
 	
 	var root = d3.hierarchy({children: params.data})
-	  .sum(function(d) { return d.count; })
-	  .each(function(d) {	  	
-	    if (id = d.data.value) {
-	      var id, i = id.lastIndexOf(".");
-	      d.id      = id;
-	    }
-	});
+				  .sum(function(d) { return d.count; })
+				  .each(function(d) {	  	
+				    if (id = d.data.value) {
+				      var id, i = id.lastIndexOf(".");
+				      d.id      = id;
+				    }
+				});
 
 	var node = this.selectAll(".node")
 					.data(pack(root).leaves())
@@ -424,10 +426,10 @@ function bubbleChart (params){
 					  .attr("transform", function(d) {  return "translate(" + d.x + "," + d.y + ")"; });
 
 	node.append("circle")
-	  .attr("id", function(d) { return d.id; })
-	  .attr("r", function(d) { return d.r; })
-	  .style("fill", function(d) {  return scaleColor(d.data.count); })
-	  .style('opacity', opacity);
+		  .attr("id", function(d) { return d.id; })
+		  .attr("r", function(d) { return d.r; })
+		  .style("fill", function(d) {  return scaleColor(d.data.count); })
+		  .style('opacity', opacity);
 
 	node.append("clipPath")
 	  .attr("id", function(d) { return "clip-" + d.id; })
@@ -435,13 +437,13 @@ function bubbleChart (params){
 	  .attr("xlink:href", function(d) { return "#" + d.id; });
 
 	node.append("text")
-	  .attr("clip-path", function(d) { return "url(#clip-" + d.id + ")"; })
-	.selectAll("tspan")
-	.data(function(d) { return d.id.split(/(?=[A-Z][^A-Z])/g) /*d.class.split(/(?=[A-Z][^A-Z])/g)*/; })
-	.enter().append("tspan")
-	  .attr("x", 0)
-	  .attr("y", function(d, i, nodes) { return 13 + (i - nodes.length / 2 - 0.5) * 10; })
-	  .text(function(d) { return d; });
+		  .attr("clip-path", function(d) { return "url(#clip-" + d.id + ")"; })
+		.selectAll("tspan")
+		.data(function(d) { return d.id.split(/(?=[A-Z][^A-Z])/g) /*d.class.split(/(?=[A-Z][^A-Z])/g)*/; })
+		.enter().append("tspan")
+		  .attr("x", 0)
+		  .attr("y", function(d, i, nodes) { return 13 + (i - nodes.length / 2 - 0.5) * 10; })
+		  .text(function(d) { return d; });
 
 	node.on("mousemove", function(d){
 		d3.select(this).select('circle').transition().delay(0).duration(100)

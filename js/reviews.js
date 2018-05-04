@@ -210,22 +210,15 @@ function chartsReviews(companySelect){
           arrayPros.push({pros:d})
         })
       })
+
       var groupProsComents = group(arrayPros,['pros'])
       groupProsComents = groupProsComents.filter(function(x) {return x.value != "" })
       
-      
-      pct = 0.20
-      // RECUPERANDO % DAS PALAVRAS
-      var mediaTermos = d3.max(groupProsComents, function(x){ return x.count})*pct
-      console.log('extent = ', mediaTermos)
-      
-
-      //groupProsComents = groupProsComents.slice(0,150)
-      
-      groupProsComents = groupProsComents.filter(function(x){ return x.count > (mediaTermos)})
       groupProsComents.sort(function(x,y){
         return y.count - x.count
       })
+
+      groupProsComents = groupProsComents.slice(1,60)
 
       bubPros.margins.margin.bottom = 100;
       bubPros.margins.margin.left = 30;
@@ -248,15 +241,11 @@ function chartsReviews(companySelect){
       })
       var groupConsComents = group(arrayCons,['pros'])
       groupConsComents = groupConsComents.filter(function(x) {return x.value != "" })
-      //groupConsComents = groupConsComents.slice(0,150)
-      
-      mediaTermos = d3.max(groupConsComents, function(x){ return x.count})*pct
-      
-      groupConsComents = groupConsComents.filter(function(x){ return x.count > (mediaTermos)})
       
       groupConsComents.sort(function(x,y){
         return y.count - x.count
       })
+      groupConsComents = groupConsComents.slice(1,60)
 
       bubCons.margins.margin.bottom = 100;
       bubCons.margins.margin.left = 30;
