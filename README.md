@@ -2,9 +2,9 @@
 Web application to make analysis of jobs vacancies and companies reviews.
 
 # Load Data
-The data are save in .RDATA object, is necessary execute loadData.R to load data in CSV format.
+The data are save in .RDATA object, is necessary execute loadData.R to load data in CSV format. 
 
-Execute: ```Rscript loadData.R```
+Execute: ```Rscript loadData.R path_project\jr_analytics ```
 
 # Extract, Transform and Load (ETL)
 To make ETL just open the ETL directory, there are some scripts there :
