@@ -1,5 +1,5 @@
-### script para fazer web scrapping de vagas de emprego e avalia??es de empresas
-### Autor: Gabriel Lima Gomes - Dezembro 2017.
+### script para fazer web scrapping de vagas de emprego 
+### Autor: Gabriel Lima Gomes - Brasil - Dezembro 2017.
 
 
 #### **** WEB SCRAPPING JOBS VACANCIES **** ####

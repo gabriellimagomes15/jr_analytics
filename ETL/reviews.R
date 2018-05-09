@@ -1,12 +1,12 @@
-### script para fazer web scrapping de vagas de emprego e avaliações de empresas
-### Autor: Gabriel Lima Gomes - Dezembro 2017.
+### script para fazer web scrapping de avaliações de empresas
+### Autor: Gabriel Lima Gomes - Brasil - Dezembro 2017.
 
 
 #### **** WEB SCRAPPING REVIEWS **** ####
 
 ### FUNÇÃO PARA CAPTURAR REVISÕES DO SITE Love Mondays
 reviewsLoveMondays <- function(){
-  print('reviewsLoveMondays')
+  print('reviews Love Mondays')
   urls     <- c('https://www.lovemondays.com.br/trabalhar-na-ifood/avaliacoes/pagina/',
                 'https://www.lovemondays.com.br/trabalhar-na-nubank/avaliacoes/pagina/',
                 'https://www.lovemondays.com.br/trabalhar-na-ibm/avaliacoes/pagina/',
@@ -29,8 +29,9 @@ reviewsLoveMondays <- function(){
       }else{
         totalPages <- 1
       }
+
       for( page in 1:totalPages){
-        cat('==> Page: ',page)
+        cat('\n\n ==> Page: ',page)
         urlPage2 <- paste(urlPage,page, sep = '')
         cat('\t',urlPage2)
         
@@ -53,14 +54,14 @@ reviewsLoveMondays <- function(){
                                 company = company,ids = ids, ratings = ratings)
         
         reviewDF <- rbind(reviewDF,reviews)
-        fwrite(reviewDF, paste('data/reviewLoveM-',Sys.Date(),'.csv',sep = ''))
+        fwrite(reviewDF, paste('data/reviews/reviewLoveM-',Sys.Date(),'.csv',sep = ''))
       }## END FOR totalPages
     }, error = function(e){
       print(paste('ERROR IN FOR URLS: ', e , sep = ' ') )
     })
   }#END FOR urls
-  print("***** END REVIEWS LOVE MONDAYS ****")
-  
+  cat("\n ***** END REVIEWS LOVE MONDAYS ****")
+  return(reviewDF)
 }
 
 reviewsGlassDoor <- function(){
@@ -86,9 +87,10 @@ reviewsGlassDoor <- function(){
       }else{
         totalPages <- 1
       }
+      
       ## LOOP TO READ EACH PAGE
       for( page in 1:totalPages){
-        cat('==> Page: ',page)
+        cat('\n\n==> Page: ',page)
         urlPage2 <- paste(urlPage,page,'.htm', sep = '')
         cat('\t',urlPage2)
         
@@ -109,14 +111,14 @@ reviewsGlassDoor <- function(){
                                 company = company,ids = ids, ratings = ratings)
         
         reviewDF <- rbind(reviewDF,reviews)
-        fwrite(reviewDF, paste('data/reviewGlassD-',Sys.Date(),'.csv',sep = ''))
+        fwrite(reviewDF, paste('data/reviews/reviewGlassD-',Sys.Date(),'.csv',sep = ''))
       }## END FOT totalPages
     }, error = function(e){
       print(paste('ERROR IN FOR URLS: ', e , sep = ' ') )
     })
   }## END FOR urls
-  print("***** END REVIEWS GLASSDOOR ****")
-  
+  cat("\n ***** END REVIEWS GLASSDOOR ****")
+  return(reviewDF)
 }
 
 reviewsIndeed <- function(){
@@ -143,6 +145,7 @@ reviewsIndeed <- function(){
       }else{
         totalPages <- 1
       }
+      
       for( page in 0:totalPages){
         cat('\n\n==> Page: ',page)
         urlPage2 <- paste(urlPage,'?start=',as.character(page*20), sep = '')
@@ -160,14 +163,16 @@ reviewsIndeed <- function(){
                                 company = company,ids = ids, ratings = ratings)
         
         reviewDF <- rbind(reviewDF,reviews)
-        fwrite(reviewDF, paste('data/reviewIndeed-',Sys.Date(),'.csv',sep = ''))
+        fwrite(reviewDF, paste('data/reviews/reviewIndeed-',Sys.Date(),'.csv',sep = ''))
       }## END FOR totalPages
       Sys.sleep(3)
     }, error = function(e){
       print(paste('ERROR IN FOR URLS: ', e , sep = ' ') )
     })
   }#END FOR urls
-  print("***** END REVIEWS INDEED ****")
+  cat("\n ***** END REVIEWS INDEED ****")
+  
+  return(reviewDF)
 }
 
 
@@ -233,7 +238,7 @@ scrapReviews <- function(nodes = '',tagDate = 'ni', tagTitle = 'ni',tagStatus = 
       
       dateCollect <- Sys.Date()
       
-      dataFrame <- data.frame(company, date, title,dataCollect = dateCollect, status, location, recommend, outlook, 
+      dataFrame <- data.frame(company, date, title,dateCollect = dateCollect, status, location, recommend, outlook, 
                               ceo, pros, cons, adviceManag)
       
       reviewDF <- rbind(reviewDF, dataFrame)
@@ -254,7 +259,9 @@ cleanReviewGlassD <- function(dados){
   
   dadosClean$companyClean <- gsub('Reviews','',dadosClean$company)
   
+  print("Clean Date")
   i <- 1
+  dadosClean$date <- as.character(dadosClean$date)
   dadosClean$date <- sapply(dadosClean$date, function(x){
     if(grepl('seconds',x)){
       x <- format(as.Date(dadosClean[i,]$dateCollect),'%b %d, %Y')
@@ -262,12 +269,16 @@ cleanReviewGlassD <- function(dados){
     i <<- i + 1
     x
   })
+  
   dadosClean$dateClean <- lubridate::mdy(as.character(dadosClean$date))
-
+  
+  print("Clean Title")
   dadosClean$title <- gsub('\"','', dadosClean$title)
+  
   dadosClean$city  <- clearCity(dadosClean$location)
   dadosClean$state <- clearState(dados$location)  
   
+  print("Clean Recommend")
   dadosClean$recommend <- sapply(dadosClean$recommend, function(x){
     if(x == "Doesn't Recommend"){
       x <- 'No'
@@ -278,6 +289,8 @@ cleanReviewGlassD <- function(dados){
     }
     x
   })
+  
+  print("Clean Outlook")
   dadosClean$outlook <- sapply(dados$outlook, function(x){
     x <- gsub('Outlook','',x)
     if(grepl('of',x)){
@@ -285,11 +298,14 @@ cleanReviewGlassD <- function(dados){
     }
     x
   })
+  
+  print("Clean Ceo")
   dadosClean$ceo <- sapply(dadosClean$ceo, function(x){
     x <- gsub('of','',x)
     x
   })
   
+  print("Clean Position")
   dadosClean$position <- sapply(dadosClean$status, function(x){
     ini <- regexpr('-',x)[[1]] + 1
     if(ini > 0){
@@ -297,6 +313,8 @@ cleanReviewGlassD <- function(dados){
     }
     x  
   })
+  
+  print("Clean Status")
   dadosClean$status <-sapply(dadosClean$status, function(x){
     fim <- regexpr('-',x)[[1]] - 1
     if(fim > 0){
@@ -305,10 +323,12 @@ cleanReviewGlassD <- function(dados){
     x
   })
   
-  dadosClean$id <- paste('gd_',dadosClean$id,sep = '')
+  print("Clean ID")
+  dadosClean$id   <- paste('gd_',dadosClean$id,sep = '')
   dadosClean$site <- 'glassdoor'
-  cols <-c("id","company","dateClean","dateCollect","rating","city","state","title","status","position","recommend","pros","cons","adviceManag","outlook","ceo","site")
+  cols <- c("id","company","dateClean","dateCollect","rating","city","state","title","status","position","recommend","pros","cons","adviceManag","outlook","ceo","site")
   
+  dadosClean <- delDup(dadosClean)
   dadosClean <- dadosClean %>% select_(.dots = cols)
   #fwrite(dadosClean,'data/reviewGlassD.csv') 
   return(dadosClean)
@@ -317,8 +337,12 @@ cleanReviewGlassD <- function(dados){
 
 cleanReviewIndeed <- function(dados){
   dadosClean       <- dados
+  
+  print("Clean Date")
   dadosClean$dateClean <- lubridate::dmy(as.character(dadosClean$date))
   dadosClean$city  <- clearCity(dadosClean$location)
+  
+  print("Clean State")
   dadosClean$state <- sapply(dadosClean$location, function(x){
     x <- gsub('\n','',x)
     x <- gsub('[[:digit:]]','',x)
@@ -332,10 +356,12 @@ cleanReviewIndeed <- function(dados){
     x
   })
   
+  print("Clean Comment")
   dadosClean$pros <- gsub('Prós','',dadosClean$pros)#sapply(dadosClean$pros, function)
   dadosClean$cons <- gsub('Contras','',dadosClean$cons)#sapply(dadosClean$pros, function)
   dadosClean$adviceManag <- gsub('Conselhos para presidência:','',dadosClean$cons)
   
+  print("Clean Position")
   dadosClean$position <- sapply(dadosClean$status,function(x){
     fim <- gregexpr('Ex-Funcionário|Funcionário Atual',x)[[1]]-1
     if(fim > 0){
@@ -345,6 +371,7 @@ cleanReviewIndeed <- function(dados){
     x
   })
   
+  print("Clean Status")
   dadosClean$status <- sapply(dadosClean$status,function(x){
     if(grepl('Ex-Funcionário',x)){
       x <- 'Ex-funcionário'
@@ -357,20 +384,28 @@ cleanReviewIndeed <- function(dados){
   dadosClean$id <- paste('in_',dadosClean$id,sep = '')
   
 #  cols <-c("id","company","dateClean","rating","city","state","title","status","recommend","pros","cons","adviceManag","outlook","ceo","site")
-  cols <-c("id","company","dateClean","dateCollect","rating","city","state","title","status","position","recommend","pros","cons","adviceManag","outlook","ceo","site")
+  cols <- c("id","company","dateClean","dateCollect","rating","city","state","title","status","position","recommend","pros","cons","adviceManag","outlook","ceo","site")
   
-  dadosClean <- dadosClean[,..cols]
   #fwrite(dadosClean,'data/reviewIndeed.csv')
+  dadosClean <- delDup(dadosClean)
+  dadosClean <- dadosClean %>% select_(.dots = cols)
+  
   return(dadosClean)
 }## END cleanReviewIndeed function
 
 cleanReviewLoveM <- function(dados){
   dadosClean <- dados
-  dadosClean       <- convertDate(dados)
-  dadosClean$dateClean <- lubridate::ymd(dadosClean$dateClean)
-  dadosClean$company <- gsub('\n','',dadosClean$company)
-  dadosClean$city  <- clearCity(dadosClean$location)
-  dadosClean$state <- clearState(dadosClean$location)
+  
+  print("Clean Date")
+  dadosClean             <- convertDate(dadosClean)
+  dadosClean$dateClean   <- lubridate::ymd(dadosClean$dateClean)
+  
+  print("Clean Company")
+  dadosClean$company     <- gsub('\n','',dadosClean$company)
+  dadosClean$city        <- clearCity(dadosClean$location)
+  dadosClean$state       <- clearState(dadosClean$location)
+  
+  print("Clean Advice")
   dadosClean$adviceManag <- sapply(dadosClean$recommend, function(x){
     if(grepl('conselhos',x, ignore.case = T)){
       x
@@ -378,6 +413,8 @@ cleanReviewLoveM <- function(dados){
       x <- 'NI'
     }
   })
+  
+  print("Clean Recommend")
   dadosClean$recommend <- sapply(dadosClean$recommend, function(x){
     if(grepl('conselhos',x, ignore.case = T)){
       x <- 'NI'
@@ -387,10 +424,12 @@ cleanReviewLoveM <- function(dados){
       x
     }
   })
+  print("Clean Comments")
   dadosClean$pros <- gsub('Prós:','',dadosClean$pros)#sapply(dadosClean$pros, function)
   dadosClean$cons <- gsub('Contras:','',dadosClean$cons)#sapply(dadosClean$pros, function)
   dadosClean$adviceManag <- gsub('Conselhos para presidência:','',dadosClean$cons)
   
+  print("Clean Position")
   dadosClean$position <- sapply(dadosClean$status,function(x){
     fim <- gregexpr('Ex-funcionário',x)[[1]]-1
     if(fim > 0){
@@ -400,6 +439,7 @@ cleanReviewLoveM <- function(dados){
     x
   })
   
+  print("Clean Status")
   dadosClean$status <- sapply(dadosClean$status,function(x){
     if(grepl('Ex-funcionário|saiu',x)){
       x <- 'Ex-funcionário'
@@ -409,31 +449,45 @@ cleanReviewLoveM <- function(dados){
     x
   })
   
+  print("Clean ID")
   dadosClean$id <- paste('lm_',dadosClean$id,sep = '')
   dadosClean$site <- 'love mondays'
-  cols <-c("id","company","dateClean","dateCollect","rating","city","state","title","status","position","recommend","pros","cons","adviceManag","outlook","ceo","site")
+  cols <- c("id","company","dateClean","dateCollect","rating","city","state","title","status","position","recommend","pros","cons","adviceManag","outlook","ceo","site")
   
-  
-  dadosClean <- dadosClean[,cols]
+  dadosClean <- dadosClean %>% select_(.dots = cols)
+
   #fwrite(dadosClean,'data/reviewLoveM.csv')
+  return(dadosClean)
 } ## END cleanReviewLoveM function
 
 ### TRANSFORMAÇÕES NECESSÁRIAS PARA SEREM APLICADAS NA BASE DE DADOS FINAL
-cleanReviewFinal <- function(){
+cleanReviewFinal <- function(dados){
   #load('data/reviews.RData')
   #reviewClean <- reviews
-  reviewClean <- fread('data/reviewFinal.csv',encoding = 'UTF-8')
+  reviewClean <- dados #fread('data/reviewFinal.csv',encoding = 'UTF-8')
 
   reviewClean[,c('pros','cons','title')] <- cleanText(reviewClean,c('pros','cons','title'),
-                                                      stopWords = c('reviews','pra','empresa','?','trabalho','ser','muito','ponto','positivo','negativo',
+                                                      stopWords = c('reviews','pra','empresa','\\?','trabalho','ser','muito','ponto','positivo','negativo',
                                                                     'can','like','make','many',
                                                                     stopwords('en'),stopwords('sp') )
                                                       ,specialChar = T)
 
+  print("Clean Recommend")
   reviewClean$recommend <- gsub('Sim','Yes',reviewClean$recommend)
   reviewClean$recommend <- gsub('Não','No',reviewClean$recommend)
   
-  fwrite(dados,'data/reviewFinal.csv')  
+  print("Convert to String")
+  reviewClean <- data.frame(apply(reviewClean, 2, function(x){
+    x <- as.character(x) 
+  }),stringsAsFactors = F)
+  
+  cols <- c('id','dateClean','dateCollect','rating','city','state','status','position','recommend','adviceManag','outlook',
+            'ceo','site','title','pros','cons','company')
+  
+  print("Select Columns")
+  reviewClean <- reviewClean %>% select_(.dots = cols)
+  #fwrite(dados,'data/reviewFinal.csv')
+  return(reviewClean)
 }
 
 

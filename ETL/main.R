@@ -1,3 +1,6 @@
+### SCRIPT PRINCIPAL PARA EXECUTAR WEB SCRAPING, PRE-PROCESSAMENTO E DATA MINING
+### Gabriel Lima Gomes - Brasil - 2018
+
 #path <- 'E:/Curso Cientista de Dados/Projeto Final/analysisFacebook/jobsAnalysis'
 #path <- 'E:/jobsAnalysis'
 
@@ -19,43 +22,38 @@ source(paste(path[p],'/ETL/dataMining.R', sep = '') )
 #### >>>> JOBS VACANCIES ####
 
 #### WEB SCRAPING ####
-jobsIndeed      <- fread("data/jobs/jobsIndeedBrasil2018-04-24.csv", encoding = 'UTF-8') # jobsIndeed()
-jobsIndeedClean <- #fread("data/jobs/jobsIndeedClean2018-04-24.csv", encoding = 'UTF-8') #
-                  cleanJobsIndeed(jobsIndeed)
+jobsIndeed      <- jobsIndeed()
+jobsLoveMond      <- jobsLoveM()
+jobsGlassDoor   <- jobsGlassDoor()
+
+#### PRE PROCESS ####
+jobsIndeedClean <- cleanJobsIndeed(jobsIndeed)
 #tab <- table(jobsIndeedClean$stateClean) ###
-#fwrite(jobsIndeedClean,paste('data/jobs/jobsIndeedClean',Sys.Date(),'.csv',sep = "") )
+fwrite(jobsIndeedClean,paste('data/jobs/jobsIndeedClean',Sys.Date(),'.csv',sep = "") )
 
-jobsLoveMond      <- fread("data/jobs/jobsLMBrasil2018-04-24.csv", encoding = 'UTF-8') #jobsLoveM()
-jobsLoveMondClean <- #fread("data/jobs/jobsLoveMondClean2018-04-24.csv", encoding = 'UTF-8') #
-                    cleanJobsLoveMond(jobsLoveMond)
+jobsLoveMondClean <- cleanJobsLoveMond(jobsLoveMond)
 #tab <- table(jobsLoveMondClean$stateClean) ###
-#fwrite(jobsLoveMondClean,paste('data/jobs/jobsLoveMondClean',Sys.Date(),'.csv',sep = "") )
+fwrite(jobsLoveMondClean,paste('data/jobs/jobsLoveMondClean',Sys.Date(),'.csv',sep = "") )
 
-jobsGlassDoor   <- rbind(a,b,c)
-
-jobsGlassDClean <- #fread("data/jobs/jobsGlassDClean2018-04-25.csv", encoding = 'UTF-8') #
-  cleanJobsGlassDoor(jobsGlassDoor)
+jobsGlassDClean <- cleanJobsGlassDoor(jobsGlassDoor)
 #tab <- table(jobsGlassDClean$stateClean) ###
 #View(tab)
 #fwrite(jobsGlassDClean,paste('data/jobs/jobsGlassDClean',Sys.Date(),'.csv',sep = "") )
 
 mergeDados <- rbind(jobsGlassDClean,jobsIndeedClean,jobsLoveMondClean)
-jobsFinal  <- fread("data/jobsFinal.csv", encoding = 'UTF-8')
+jobsFinal  <- fread("data/jobsFinal.csv", encoding = 'UTF-8') ### DADOS ATUAIS 
+fwrite(jobsFinal,paste('data/jobsFinal',Sys.Date(),'.csv',sep = "") ) ### BACKUP DA BASE ANTIGA
 
 colnames(mergeDados) <- colnames(jobsFinal)
 mergeDadosClean      <- cleanJobsFinal(mergeDados)
 
 
-jobsFinal <- rbind(mergeDadosClean, jobsFinal)
+jobsFinal <- rbind(mergeDadosClean, jobsFinal) ### MERGE DAS BASES DE DADOS (ANTIGA E NOVA)
 jobsFinal <- delDup(jobsFinal)
 jobsFinal <- cleanJobsFinal(jobsFinal)
 
-jobsFinal$country <- gsub("Brasil","brazil",jobsFinal$country)
-
-
-#fwrite(jobsFinal,paste('data/jobsFinal',Sys.Date(),'.csv',sep = "") )
 fwrite(jobsFinal,'data/jobsFinal.csv')
-
+save(jobsFinal, file = 'data/jobs.RDATA')
 
 #### CLUSTER DATA MINING ####
 dados    <- data.table::fread("data/jobsFinal.csv")
@@ -64,12 +62,27 @@ fwrite(clusters, "data/clusterReq.csv")
 
 
 #### >>>> COMPANIES' REVIEWS  ####
-#reviewsLoveMondays() ## SCRAPPING AVALIA??ES NO SITE LOVE MONDAYS
-#reviewsGlassDoor() ## SCRAPPING AVALIA??ES NO GLASSDOOR
-#transGlassDoor() ## TRANSFORMA??ES AVALIA??ES DO SITE GLASSDOOR
-#transLoveMond() ## TRANSFORMA??ES AVALIA??ES DO SITE LOVE MONDAYS
+#### WEB SCRAPING ####
+revLoveM <- reviewsLoveMondays() ## SCRAPPING AVALIA합ES NO SITE LOVE MONDAYS
+revGlass <- reviewsGlassDoor() ## SCRAPPING AVALIA합ES NO GLASSDOOR
+revIndeed<- reviewsIndeed()
 
-#reviewsIndeed()
+#### PRE PROCESS ####
+revGlassDClean <- cleanReviewGlassD(revGlass) ## TRANSFORMA??ES AVALIA합ES DO SITE GLASSDOOR
+revLoveMClean  <- cleanReviewLoveM(revLoveM) ## TRANSFORMA??ES AVALIA합ES DO SITE LOVE MONDAYS
+revIndeedClean <- cleanReviewIndeed(revIndeed)
+
+mergeReview <- rbind(revGlassDClean, revLoveMClean, revIndeedClean)
+reviewFinal <- fread("data/reviewFinal.csv", encoding = 'UTF-8') ### DADOS ATUAIS 
+fwrite(reviewFinal,paste('data/reviewFinal',Sys.Date(),'.csv',sep = "") ) ### BACKUP DA BASE ANTIGA
+
+mergeReviewClean <- cleanReviewFinal(mergeReview)
+colnames(mergeReviewClean) <- colnames(reviewFinal)
 
 
-  
+reviewFinal <- rbind(mergeReviewClean, reviewFinal) ### MERGE DAS BASES DE DADOS (ANTIGA E NOVA)
+reviewFinal <- delDup(reviewFinal)
+
+fwrite(reviewFinal,'data/reviewFinal.csv')
+save(reviewFinal, file = 'data/reviewFinal.RDATA')
+
