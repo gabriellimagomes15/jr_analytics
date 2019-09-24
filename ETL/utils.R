@@ -1,5 +1,8 @@
+### SCRIPT COM INSTALAÃ‡ÃƒO DOS PACOTES UTILZIADOS E FUNÃ‡Ã•ES
+### Gabriel Lima Gomes - Brasil - 2018
+
 ## R file with differents libraries and Functions to make analysis and text mining about
-packages <- c("rvest","plyr","data.table","tm","stringr","stringdist","dplyr","tidytext","bit64","stringr")
+packages <- c("rvest","plyr","data.table","tm","stringr","stringdist","dplyr","tidytext","bit64","stringr","lubridate")
 
 for(pkg in packages){
   print(pkg)
@@ -214,7 +217,7 @@ scrapReviewGlass <- function(urlPage = ''){
 }
 
 
-### FUNÇÃO PARA REALIZAR WEB SCRAPPING DE AVALIA??ES SOBRE EMPRESAS. 
+### FUN??O PARA REALIZAR WEB SCRAPPING DE AVALIA??ES SOBRE EMPRESAS. 
 ## PARAMETROS: 
 # nodes = NODES QUE CONTEM AS AVAILA?OES. OS NODES S?O PASSADOS COMO PARAMETRO AP?S J? REALIZAR O WEB SCRAPPING NA CLASSE PRINCIPAL(MAIN)
 # tagDate = TAG(CLASSE/ID) PARA RECUPERAR A DATA DA AVALIA??O
@@ -446,12 +449,15 @@ convertDate <- function(data){
     if(grepl('dias|dias',x['date']) ){
       days <- as.numeric(stringr::str_extract( x['date'], '[[:digit:]]+')) #as.numeric( gsub("^.*([0-9]+).*$", "\\1", x['date']) )
       x['dateClean'] <- as.character( as.Date(x['dateCollect']) - days)
+    
     }else if(grepl('meses|mes',x['date'] )){
       days <- as.numeric(stringr::str_extract( x['date'], '[[:digit:]]+')) * 30 #as.numeric( gsub("^.*([0-9]+).*$", "\\1", x['date']) ) * 30
       x['dateClean'] <- as.character( as.Date(x['dateCollect']) - days)
+    
     }else if(grepl('anos|anos',x['date'] )){
       days <- as.numeric(stringr::str_extract( x['date'], '[[:digit:]]+')) * 365 #as.numeric( gsub("^.*([0-9]+).*$", "\\1", x['date']) ) * 365
       x['dateClean'] <- as.character( as.Date(x['dateCollect']) - days)
+    
     }else{
       x['dateClean'] <- x['dateCollect']
     }
@@ -488,8 +494,9 @@ cleanText <- function(data,column = '', stopWords = "",stemming = F,specialChar 
   #stopWords <- ''
   
   dataClear <- dataClear %>%
-    select_(.dots = column)
+                select_(.dots = column)
   
+  print("Clean Text")
   retorno  <- lapply(dataClear,function(x){
     x <- gsub('http.* *', '', x)
     x <- gsub("(RT|via)((?:\\b\\W*@\\w+)+)", " ", x)
@@ -509,10 +516,12 @@ cleanText <- function(data,column = '', stopWords = "",stemming = F,specialChar 
   
   # remove special character
   if(specialChar){
+    print("Clean Special Character")
     retorno <- lapply(retorno,function(x){iconv( enc2native(x), to = "ASCII//TRANSLIT") })
   }
   
   if(stemming){
+    print("Clean Stemming")
     retorno <- lapply(retorno,function(x){stemDocument(x,language = "portuguese")})
   }
   
@@ -564,7 +573,7 @@ dictonarySkills <- function(){
   write(skills, 'dictonarySkills.txt')
 }
 
-### FUNÇÃO PARA ELIMINAR REGISTROS DUPLICADOS
+### FUN??O PARA ELIMINAR REGISTROS DUPLICADOS
 delDup <- function(data){
   # Removing Duplicate tweets and Removing null line
   data[,"DuplicateFlag"] = duplicated(data$id);
